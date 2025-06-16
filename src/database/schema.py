@@ -1,9 +1,10 @@
 import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
+
 def create_database_schema(connection_string: str):
     """Create database schema with all necessary tables"""
-    ddl_script = '''
+    ddl_script = """
     -- Enable UUID extension
     CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
@@ -75,18 +76,24 @@ def create_database_schema(connection_string: str):
     CREATE INDEX IF NOT EXISTS idx_subscriptions_customer_id ON subscriptions(customer_id);
     CREATE INDEX IF NOT EXISTS idx_subscriptions_plan_variation_id ON subscriptions(plan_variation_id);
     CREATE INDEX IF NOT EXISTS idx_billing_transactions_subscription_id ON billing_transactions(subscription_id);
-    '''
+    """
 
     try:
         # Establish connection
-        conn = psycopg2.connect(connection_string)
+        conn = psycopg2.connect(
+            dbname="subscription_management_test",
+            user="postgres",
+            password="postgres",
+            host="localhost",
+            port="5432",
+        )
         conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
-        
+
         # Create cursor
         with conn.cursor() as cur:
             # Execute the DDL script
             cur.execute(ddl_script)
-        
+
         print("Database schema created successfully")
 
     except psycopg2.Error as e:
@@ -96,27 +103,28 @@ def create_database_schema(connection_string: str):
         if conn:
             conn.close()
 
+
 def drop_database_schema(connection_string: str):
     """Drop all tables in the schema (use with caution)"""
-    drop_script = '''
+    drop_script = """
     DROP TABLE IF EXISTS billing_transactions;
     DROP TABLE IF EXISTS subscriptions;
     DROP TABLE IF EXISTS customers;
     DROP TABLE IF EXISTS subscription_plan_variations;
     DROP TABLE IF EXISTS subscription_plans;
     DROP EXTENSION IF EXISTS "uuid-ossp";
-    '''
+    """
 
     try:
         # Establish connection
         conn = psycopg2.connect(connection_string)
         conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
-        
+
         # Create cursor
         with conn.cursor() as cur:
             # Execute the drop script
             cur.execute(drop_script)
-        
+
         print("Database schema dropped successfully")
 
     except psycopg2.Error as e:
