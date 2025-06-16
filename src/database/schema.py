@@ -1,4 +1,5 @@
 import psycopg2
+import os
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 
@@ -79,11 +80,14 @@ def create_database_schema(connection_string: str):
     """
 
     try:
+        user = os.environ["POSTGRES_USER"]
+        password = os.environ["POSTGRES_PASSWORD"]
+        db_name = os.environ["POSTGRES_DB"]
         # Establish connection
         conn = psycopg2.connect(
-            dbname="subscription_management_test",
-            user="postgres",
-            password="postgres",
+            dbname=db_name,
+            user=user,
+            password=password,
             host="localhost",
             port="5432",
         )
