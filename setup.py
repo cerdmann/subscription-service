@@ -9,7 +9,8 @@ setup(
         'psycopg2-binary==2.9.3',
         'python-dotenv==0.20.0',
         'structlog==22.1.0',
-        'uuid==1.30'
+        'flask==2.3.2',
+        'gunicorn==20.1.0'
     ],
     extras_require={
         'dev': [

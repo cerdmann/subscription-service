@@ -1,6 +1,19 @@
-# Database package initialization
-# Import database-related utilities
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, scoped_session
+from contextlib import contextmanager
+import os
 
-from .schema import create_database_schema, drop_database_schema
+engine = create_engine(os.getenv('DATABASE_URL', 'postgresql://localhost/subscriptions'))
+SessionLocal = sessionmaker(bind=engine)
 
-__all__ = ['create_database_schema', 'drop_database_schema']
+@contextmanager
+def db_session():
+    session = scoped_session(SessionLocal)
+    try:
+        yield session
+        session.commit()
+    except:
+        session.rollback()
+        raise
+    finally:
+        session.close()

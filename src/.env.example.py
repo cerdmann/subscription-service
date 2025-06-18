@@ -1,0 +1,5 @@
+DATABASE_URL=postgresql://username:password@localhost/subscriptions
+SECRET_KEY=your_secret_key
+API_USERNAME=test
+API_PASSWORD=test123
+FLASK_ENV=development
